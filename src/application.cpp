@@ -23,9 +23,14 @@ void Application::init(GLFWwindow* window)
     this->ambient_light = glm::vec4(0.75f, 0.75f, 0.75f, 1.f);
 
     /* ADD NODES TO THE SCENE */
-    SceneNode* example = new SceneNode();
-    example->mesh = Mesh::Get("res/meshes/sphere.obj");
-    example->material = new StandardMaterial();
+    //SceneNode* example = new SceneNode();
+    //example->mesh = Mesh::Get("res/meshes/sphere.obj");
+    //example->material = new StandardMaterial();
+    //this->node_list.push_back(example);
+
+    VolumeNode* example = new VolumeNode();
+    example->mesh = Mesh::Get("res/meshes/cube.obj");
+    example->material = new VolumeMaterial();
     this->node_list.push_back(example);
 }
 

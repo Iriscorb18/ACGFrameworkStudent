@@ -57,3 +57,14 @@ public:
 	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
 	void renderInMenu();
 };
+
+// VolumeMaterial class added for volumetric rendering
+class VolumeMaterial : public Material {
+public:
+	VolumeMaterial(glm::vec4 color = glm::vec4(1.f));
+	~VolumeMaterial();
+
+	void setUniforms(Camera* camera, glm::mat4 model);
+	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
+	void renderInMenu();
+};

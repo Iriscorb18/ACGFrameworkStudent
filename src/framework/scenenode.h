@@ -32,3 +32,16 @@ public:
 	virtual void renderWireframe(Camera* camera);
 	virtual void renderInMenu();
 };
+
+// VolumeNode class inheriting from SceneNode
+class VolumeNode : public SceneNode {
+public:
+	static unsigned int lastNameId;
+	VolumeNode();
+	VolumeNode(const char* name);
+	~VolumeNode();
+
+	virtual void render(Camera* camera);
+	virtual void renderVolume(Camera* camera);
+	virtual void renderInMenu();
+};
