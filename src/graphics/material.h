@@ -65,8 +65,9 @@ public:
 	~VolumeMaterial();
 
 	glm::vec4 backgroundColor;
-	float absorptionCoefficient;
-
+	float absorptionCoefficient = 0.001;
+	glm::vec3 boxMin = glm::vec3(-1.0f); // Set these to your volume's minimum bounds
+	glm::vec3 boxMax = glm::vec3(1.0f);  // Set these to your volume's maximum bounds
 	void setUniforms(Camera* camera, glm::mat4 model);
 	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
 	void renderInMenu();

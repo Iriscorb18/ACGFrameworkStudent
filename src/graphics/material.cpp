@@ -181,9 +181,9 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_camera_position", camera->eye);
 	this->shader->setUniform("u_model", model);
 
-	// Set the bounding box uniforms in the shader
-	this->shader->setUniform("u_box_min", this->mesh->aabb_min);
-	this->shader->setUniform("u_box_max", this->mesh->aabb_max);
+	// Set box bounds as uniforms
+	this->shader->setUniform("u_box_min", this->boxMin);
+	this->shader->setUniform("u_box_max", this->boxMax);
 
 	this->shader->setUniform("u_color", this->color);
 	this->shader->setUniform("u_absorption_coefficient", this->absorptionCoefficient);

@@ -1,35 +1,49 @@
 #version 450 core
 
-in vec3 v_position;
-in vec3 v_world_position;
-in vec3 v_normal;
+// Uniforms for user-controlled parameters
+uniform vec3 u_backgroundColor;      // Background color B
+uniform float u_absorptionCoefficient; // Absorption coefficient μa
 
-uniform vec3 u_camera_position;
+// Input for ray parameters (assuming you already calculate these)
+in vec3 v_rayOrigin;  // Make sure to declare this in the vertex shader too
+in vec3 v_rayDirection; // Make sure to declare this in the vertex shader too
 
-uniform vec4 u_color;
-uniform vec4 u_ambient_light;
+// Output color for each fragment
+out vec4 FragColor; // Correctly declare the output color
 
-uniform vec3 u_light_position;
-uniform vec4 u_light_color;
-uniform float u_light_intensity;
-uniform float u_light_shininess;
+// Function to compute the intersection points (e.g., with a box)
+bool intersectVolume(vec3 origin, vec3 direction, out float tEnter, out float tExit) {
+    // Calculate intersection points with volume geometry (a cube or sphere, for example)
+    // Example of a unit box [-1,1] for simplicity.
+    vec3 tMin = (vec3(-1.0) - origin) / direction;
+    vec3 tMax = (vec3(1.0) - origin) / direction;
 
-out vec4 FragColor;
+    vec3 t1 = min(tMin, tMax);
+    vec3 t2 = max(tMin, tMax);
 
-void main()
-{
-	vec3 N = normalize(v_normal);
-	vec3 L = normalize(u_light_position - v_world_position);
-	vec3 V = normalize(u_camera_position - v_world_position);
-	vec3 R = reflect(-L, N);
+    tEnter = max(max(t1.x, t1.y), t1.z);
+    tExit = min(min(t2.x, t2.y), t2.z);
 
-	// Phong
-	float diff = max(dot(N, L), 0.0);
-	vec4 diffuse = diff * u_light_color;
+    return tEnter < tExit && tExit > 0.0;
+}
 
-	float spec = pow(max(dot(V, R), 0.0), u_light_shininess);
-	vec4 specular = spec * u_light_color;
+void main() {
+    float tEnter, tExit;
+    if (intersectVolume(v_rayOrigin, v_rayDirection, tEnter, tExit)) {
+        // Calculate the optical thickness
+        float pathLength = tExit - tEnter;
+        float opticalThickness = pathLength * u_absorptionCoefficient;
 
-	vec4 phong_color = (u_ambient_light + diffuse + specular) * u_color;
-	FragColor = phong_color * u_light_intensity;
+        // Compute the transmittance using Beer-Lambert law
+        float transmittance = exp(-opticalThickness);
+
+        // Calculate the final color by scaling the background color
+        vec3 radiance = u_backgroundColor * transmittance;
+
+        // Output the color as vec4
+        FragColor = vec4(radiance, 1.0);
+    } else {
+        // If no intersection, set color to background
+        FragColor = vec4(u_backgroundColor, 1.0);
+    }
 }
