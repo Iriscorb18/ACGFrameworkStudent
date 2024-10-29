@@ -20,7 +20,7 @@ void Application::init(GLFWwindow* window)
     this->flag_grid = true;
     this->flag_wireframe = false;
 
-    this->ambient_light = glm::vec4(0.75f, 0.75f, 0.75f, 1.f);
+    this->ambient_light = glm::vec4(0.0f, 0.0f, 0.5f, 1.f);
 
     /* ADD NODES TO THE SCENE */
     //SceneNode* example = new SceneNode();

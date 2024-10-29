@@ -8,19 +8,20 @@ uniform vec3 u_camera_position;
 
 uniform vec4 u_color;
 uniform vec4 u_ambient_light;
+uniform float u_absorption_coefficient;  // Absorption coefficient µa
 
 uniform vec3 u_light_position;
 uniform vec4 u_light_color;
 uniform float u_light_intensity;
 uniform float u_light_shininess;
-// Absorption Model parameters
-uniform vec4 u_background_color;  // Background color B
-uniform float u_absorption_coefficient;  // Absorption coefficient µa
+
 
 uniform vec3 u_box_min; // To receive the min bounds
 uniform vec3 u_box_max; // To receive the max bounds
+
 // Outputs
 out vec4 FragColor;
+
 // Function to compute ray-box intersection using AABB
 vec2 intersectAABB(vec3 rayOrigin, vec3 rayDir, vec3 boxMin, vec3 boxMax) {
     vec3 tMin = (boxMin - rayOrigin) / rayDir;
@@ -45,11 +46,13 @@ void main()
 
 
     // Default to background color if no hit
-    vec4 final_color = u_background_color; 
+    vec4 final_color = u_ambient_light; 
+    
     if (tb <= ta && ta > 0.0) {
         // Compute the optical thickness using the Beer-Lambert Law
         float optical_thickness = (ta - tb) * u_absorption_coefficient;
         float transmittance = exp(-optical_thickness);
+
         // Compute the final color: L(t) = B * e^(-(tb - ta) * µa)
         final_color += transmittance;
     }

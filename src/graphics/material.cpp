@@ -160,13 +160,12 @@ void StandardMaterial::renderInMenu()
 }
 
 // VolumeMaterial implementation
-VolumeMaterial::VolumeMaterial(glm::vec4 color)
+VolumeMaterial::VolumeMaterial(glm::vec4 color) 
 {
 	this->color = color;
 	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/volume.fs");
 	this->absorptionCoefficient = 0.1f; // Example value
-	this->backgroundColor = Application::instance->ambient_light; // Default black background
-
+	this->backgroundColor = Application::instance->ambient_light; // Default background
 
 }
 
@@ -196,6 +195,9 @@ void VolumeMaterial::render(Mesh* mesh, glm::mat4 model, Camera* camera)
 		// enable shader
 		this->shader->enable();
 
+		this->boxMin = mesh->aabb_min;
+		this->boxMax = mesh->aabb_max;
+
 		// upload uniforms
 		setUniforms(camera, model);
 
@@ -208,6 +210,6 @@ void VolumeMaterial::render(Mesh* mesh, glm::mat4 model, Camera* camera)
 
 void VolumeMaterial::renderInMenu()
 {
-	ImGui::ColorEdit3("Color", (float*)&this->color);
+	//ImGui::ColorEdit3("Color", (float*)&this->color);
 	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 1.0f);
 }

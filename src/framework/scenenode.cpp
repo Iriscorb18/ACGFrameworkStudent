@@ -84,6 +84,7 @@ VolumeNode::VolumeNode(const char* name)
 	this->mesh->createCube();  // Call createCube() on the instance
 	glm::mat4 model = glm::mat4(1.f);
 	this->model = model;	
+
 }
 
 VolumeNode::~VolumeNode() { }
