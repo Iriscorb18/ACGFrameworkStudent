@@ -21,6 +21,7 @@ void Application::init(GLFWwindow* window)
     this->flag_wireframe = false;
 
     this->ambient_light = glm::vec4(0.0f, 0.0f, 0.5f, 1.f);
+    this->background_color = glm::vec4(0.0f, 0.0f, 0.5f, 1.f);
 
     /* ADD NODES TO THE SCENE */
     //SceneNode* example = new SceneNode();
@@ -47,7 +48,8 @@ void Application::update(float dt)
 void Application::render()
 {
     // set the clear color (the background color)
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+   
+    glClearColor(this->background_color.x, this->background_color.y, this->background_color.z, 1.0);
 
     // Clear the window and the depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -72,6 +74,7 @@ void Application::renderGUI()
     if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::ColorEdit3("Ambient light", (float*)&this->ambient_light);
+        ImGui::ColorEdit3("Background Color", (float*)&this->background_color);
   
 
         if (ImGui::TreeNode("Camera")) {

@@ -192,6 +192,8 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_color", this->color);
 	this->shader->setUniform("u_absorption_coefficient", this->absorptionCoefficient);
 	this->shader->setUniform("u_ambient_light", Application::instance->ambient_light);
+	this->shader->setUniform("u_background", Application::instance->background_color);
+
 	this->shader->setUniform("u_step_length", this->stepLength);
 	this->shader->setUniform("u_noise_scale", this->noiseScale);
 
@@ -220,7 +222,7 @@ void VolumeMaterial::renderInMenu()
 {
 	//ImGui::ColorEdit3("Color", (float*)&this->color);
 	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 1.0f);
-	ImGui::SliderFloat("Step Length", &this->stepLength, 0.01f, 1.0f);
+	ImGui::SliderFloat("Step Length", &this->stepLength, 0.0001f, 0.01f);
 	ImGui::SliderFloat("Noise Scale", &this->noiseScale, 0.01f, 1.0f);
 
 	
