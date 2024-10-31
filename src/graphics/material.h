@@ -68,6 +68,8 @@ public:
 	float absorptionCoefficient = 0.001;
 	glm::vec3 boxMin; // Set these to your volume's minimum bounds
 	glm::vec3 boxMax;  // Set these to your volume's maximum bounds
+	float stepLength = 0.01;
+
 	void setUniforms(Camera* camera, glm::mat4 model);
 	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
 	void renderInMenu();
