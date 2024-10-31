@@ -176,8 +176,13 @@ VolumeMaterial::~VolumeMaterial() {
 void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 {
 	//upload node uniforms
+	glm::mat4 inverseModel = glm::inverse(model);
+	glm::vec4 temp = glm::vec4(camera->eye, 1.0);
+	temp = inverseModel * temp;
+	glm::vec3 local_camera_pos = glm::vec3(temp.x / temp.w, temp.y / temp.w, temp.z / temp.w);
 	this->shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 	this->shader->setUniform("u_camera_position", camera->eye);
+	this->shader->setUniform("u_localcamera_position", local_camera_pos);
 	this->shader->setUniform("u_model", model);
 
 	// Set box bounds as uniforms
@@ -188,6 +193,8 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_absorption_coefficient", this->absorptionCoefficient);
 	this->shader->setUniform("u_ambient_light", Application::instance->ambient_light);
 	this->shader->setUniform("u_step_length", this->stepLength);
+	this->shader->setUniform("u_noise_scale", this->noiseScale);
+
 }
 
 void VolumeMaterial::render(Mesh* mesh, glm::mat4 model, Camera* camera)
@@ -214,5 +221,7 @@ void VolumeMaterial::renderInMenu()
 	//ImGui::ColorEdit3("Color", (float*)&this->color);
 	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 1.0f);
 	ImGui::SliderFloat("Step Length", &this->stepLength, 0.01f, 1.0f);
+	ImGui::SliderFloat("Noise Scale", &this->noiseScale, 0.01f, 1.0f);
+
 	
 }
