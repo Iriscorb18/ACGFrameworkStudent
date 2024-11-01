@@ -57,6 +57,10 @@ public:
 	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
 	void renderInMenu();
 };
+enum VolumetricType {
+	HOMOGENEOUS, 
+	HETEROGENEOUS
+};
 
 // VolumeMaterial class added for volumetric rendering
 class VolumeMaterial : public Material {
@@ -66,11 +70,15 @@ public:
 
 	glm::vec4 backgroundColor;
 	float absorptionCoefficient = 0.001;
-	glm::vec3 boxMin; // Set these to your volume's minimum bounds
-	glm::vec3 boxMax;  // Set these to your volume's maximum bounds
-	float stepLength = 0.004;
+	glm::vec3 boxMin; 
+	glm::vec3 boxMax;  
+	float stepLength = 0.04;
 	float noiseScale = 0.01;
+	float noiseDetail = 0.01;
+	int volumeType; // Default HOMOGENEOUS 0
+	float emissiveIntensity =0.01;
 
+	glm::vec4 emissiveColor;
 	void setUniforms(Camera* camera, glm::mat4 model);
 	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
 	void renderInMenu();
