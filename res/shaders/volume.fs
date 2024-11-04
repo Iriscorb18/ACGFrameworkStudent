@@ -24,10 +24,8 @@ uniform vec4 u_emission_color;
 uniform float u_emission_intensity;
 
 
-
-
-uniform vec3 u_box_min; // To receive the min bounds
-uniform vec3 u_box_max; // To receive the max bounds
+uniform vec3 u_box_min; 
+uniform vec3 u_box_max; 
 
 // Outputs
 out vec4 FragColor;
@@ -106,8 +104,8 @@ float cnoise( vec3 P, float scale, float detail )
     return clamp(fractal_noise(P, detail), 0.0, 1.0);
 }
 void main() {
-    vec3 ray_origin = u_localcamera_position;
-    vec3 ray_direction = normalize(v_world_position - u_localcamera_position);
+    vec3 ray_origin = u_camera_position;
+    vec3 ray_direction = normalize(v_world_position - u_camera_position);
 
     vec2 tHit = intersectAABB(ray_origin, ray_direction, u_box_min, u_box_max);
     float tb = tHit.y;  
@@ -128,6 +126,7 @@ void main() {
         float t = ta;
         float accumulated_optical_thickness = 0.0;
         vec4 emitted_radiance = vec4(0.0);
+        vec4 accumulated_color;
 
         while (t < tb) {
             vec3 sample_position = ray_origin + t * ray_direction;
@@ -137,14 +136,16 @@ void main() {
 
             accumulated_optical_thickness += local_absorption_coefficient * u_step_length;
            
-            float transmittance_emissive = exp(-accumulated_optical_thickness);
-
-            emitted_radiance += transmittance_emissive*u_emission_color*u_emission_intensity;
-
+           
+            // Accumulate emitted radiance
+            emitted_radiance += u_emission_color * u_emission_intensity*local_absorption_coefficient;
+            
+           
             t += u_step_length;
         }
         float transmittance = exp(-accumulated_optical_thickness);
-        final_color *= transmittance+emitted_radiance;
+        accumulated_color *= transmittance;
+        final_color += accumulated_color+emitted_radiance;
    		}
 	}
     

@@ -164,9 +164,14 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 {
 	this->color = color;
 	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/volume.fs");
-	this->absorptionCoefficient = 0.01; // Example value
+	this->absorptionCoefficient = 1.0; // Example value
 	this->backgroundColor = Application::instance->ambient_light; // Default background
 	this->volumeType = 0;
+	this->stepLength = 0.04;
+	this->noiseScale = 0.01;
+	this->noiseDetail = 0.01;
+	
+	this->emissiveIntensity = 0.01;
 
 
 }

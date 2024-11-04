@@ -69,14 +69,14 @@ public:
 	~VolumeMaterial();
 
 	glm::vec4 backgroundColor;
-	float absorptionCoefficient = 0.001;
+	float absorptionCoefficient;
 	glm::vec3 boxMin; 
 	glm::vec3 boxMax;  
-	float stepLength = 0.04;
-	float noiseScale = 0.01;
-	float noiseDetail = 0.01;
+	float stepLength;
+	float noiseScale;
+	float noiseDetail;
 	int volumeType; // Default HOMOGENEOUS 0
-	float emissiveIntensity =0.01;
+	float emissiveIntensity;
 
 	glm::vec4 emissiveColor;
 	void setUniforms(Camera* camera, glm::mat4 model);
