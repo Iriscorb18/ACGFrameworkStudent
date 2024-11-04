@@ -132,20 +132,18 @@ void main() {
             vec3 sample_position = ray_origin + t * ray_direction;
 
             float noise_value = cnoise(sample_position, u_noise_scale, u_noise_detail);
-            float local_absorption_coefficient = noise_value * u_absorption_coefficient;
+            float local_absorption_coefficient = noise_value * (1-u_absorption_coefficient);
 
             accumulated_optical_thickness += local_absorption_coefficient * u_step_length;
            
-           
             // Accumulate emitted radiance
-            emitted_radiance += u_emission_color * u_emission_intensity*local_absorption_coefficient;
+            emitted_radiance += u_emission_color * u_emission_intensity * local_absorption_coefficient ;
             
-           
             t += u_step_length;
         }
         float transmittance = exp(-accumulated_optical_thickness);
         accumulated_color *= transmittance;
-        final_color += accumulated_color+emitted_radiance;
+        final_color += accumulated_color + emitted_radiance;
    		}
 	}
     
