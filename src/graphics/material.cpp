@@ -236,7 +236,7 @@ void VolumeMaterial::renderInMenu()
 	//ImGui::ColorEdit3("Color", (float*)&this->color);
 
 	ImGui::Combo("Mode", (int*)&volumeType, "HOMOGENEOUS\0HETEROGENEOUS\0");
-	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 2.0f);
+	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 1.0f);
 	ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 1.0f);
 	ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 10.0f);
 	ImGui::SliderFloat("Noise Detail", &this->noiseDetail, 0.01f, 1.00f);

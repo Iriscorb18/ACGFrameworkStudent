@@ -115,7 +115,7 @@ void main() {
     if(u_volume_type == 0){
 		if (ta <= tb && tb > 0.0) {
         
-        float optical_thickness = (tb - ta) * u_absorption_coefficient;
+        float optical_thickness = (tb - ta) * (1-u_absorption_coefficient);
 		float transmittance = exp(-optical_thickness);
 
         final_color *= transmittance;
