@@ -61,6 +61,10 @@ enum VolumetricType {
 	HOMOGENEOUS, 
 	HETEROGENEOUS
 };
+enum ShaderType {
+	ABSORPTION,
+	ABSORPTION_EMISSION
+};
 
 // VolumeMaterial class added for volumetric rendering
 class VolumeMaterial : public Material {
@@ -74,8 +78,9 @@ public:
 	glm::vec3 boxMax;  
 	float stepLength;
 	float noiseScale;
-	float noiseDetail;
+	int noiseDetail;
 	int volumeType; // Default HOMOGENEOUS 0
+	int shaderType;
 	float emissiveIntensity;
 
 	glm::vec4 emissiveColor;

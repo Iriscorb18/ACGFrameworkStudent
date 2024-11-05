@@ -106,14 +106,15 @@ float cnoise( vec3 P, float scale, float detail )
 void main() {
     vec3 ray_origin = u_camera_position;
     vec3 ray_direction = normalize(v_world_position - u_camera_position);
-
+    vec4 accumulated_color;
+    vec4 emitted_radiance = vec4(0.0);
     vec2 tHit = intersectAABB(ray_origin, ray_direction, u_box_min, u_box_max);
     float tb = tHit.y;  
     float ta = tHit.x;
 
     vec4 final_color = u_background; 
     if(u_volume_type == 0){
-		if (ta <= tb && tb > 0.0) {
+	    if (ta <= tb && tb > 0.0) {
         
         float optical_thickness = (tb - ta) * (1-u_absorption_coefficient);
 		float transmittance = exp(-optical_thickness);
@@ -125,8 +126,8 @@ void main() {
 		if (ta <= tb && tb > 0.0) {
         float t = ta;
         float accumulated_optical_thickness = 0.0;
-        vec4 emitted_radiance = vec4(0.0);
-        vec4 accumulated_color;
+        
+        
 
         while (t < tb) {
             vec3 sample_position = ray_origin + t * ray_direction;
@@ -136,11 +137,13 @@ void main() {
 
             accumulated_optical_thickness += local_absorption_coefficient * u_step_length;
            
+            emitted_radiance += u_emission_color * u_emission_intensity * local_absorption_coefficient ;
+            
             t += u_step_length;
         }
         float transmittance = exp(-accumulated_optical_thickness);
-        final_color *= transmittance;
-       
+        accumulated_color *= transmittance;
+        final_color += accumulated_color + emitted_radiance;
    		}
 	}
     

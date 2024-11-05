@@ -164,14 +164,15 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 {
 	this->color = color;
 	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/volume.fs");
-	this->absorptionCoefficient = 1.0; // Example value
+	this->absorptionCoefficient = 0.5; 
 	this->backgroundColor = Application::instance->ambient_light; // Default background
 	this->volumeType = 0;
 	this->stepLength = 0.04;
-	this->noiseScale = 0.01;
-	this->noiseDetail = 0.01;
+	this->noiseScale = 5.0;
+	this->noiseDetail = 5;
 	
-	this->emissiveIntensity = 0.01;
+	this->emissiveIntensity = 0.1;
+	this->emissiveColor = glm::vec4(1.0);
 
 
 }
@@ -233,13 +234,27 @@ void VolumeMaterial::render(Mesh* mesh, glm::mat4 model, Camera* camera)
 
 void VolumeMaterial::renderInMenu()
 {
-	//ImGui::ColorEdit3("Color", (float*)&this->color);
-
+	if (ImGui::Combo("Shader type", (int*)&shaderType, "Absorption\0Absorption-Emission\0"))
+	{
+		if (this->shaderType == ABSORPTION) {
+			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/volume.fs");
+		}
+		if (this->shaderType == ABSORPTION_EMISSION) {
+			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/volume_emissive.fs");
+		}
+	}
+		//ImGui::ColorEdit3("Color", (float*)&this->color);
+	
 	ImGui::Combo("Mode", (int*)&volumeType, "HOMOGENEOUS\0HETEROGENEOUS\0");
 	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 1.0f);
 	ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 1.0f);
-	ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 10.0f);
-	ImGui::SliderFloat("Noise Detail", &this->noiseDetail, 0.01f, 1.00f);
-	ImGui::ColorEdit3("Emissive Color", (float*)&this->emissiveColor);
-	ImGui::SliderFloat("Emissive Intensity", &this->emissiveIntensity, 0.1f, 1.00f);
+	if (volumeType == HETEROGENEOUS) {
+		ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 10.0f);
+		ImGui::SliderInt("Noise Detail", &this->noiseDetail, 1.0f, 5.0f);
+	}
+	if (shaderType == ABSORPTION_EMISSION) {
+		ImGui::ColorEdit3("Emissive Color", (float*)&this->emissiveColor);
+		ImGui::SliderFloat("Emissive Intensity", &this->emissiveIntensity, 0.1f, 1.00f);
+	}
+
 }
