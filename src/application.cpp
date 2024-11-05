@@ -20,8 +20,8 @@ void Application::init(GLFWwindow* window)
     this->flag_grid = true;
     this->flag_wireframe = false;
 
-    this->ambient_light = glm::vec4(0.0f, 0.0f, 0.5f, 1.f);
-    this->background_color = glm::vec4(0.0f, 0.0f, 0.5f, 1.f);
+    this->ambient_light = glm::vec4(0.89f, 0.93f, 0.95f, 1.f);
+    this->background_color = glm::vec4(0.89f, 0.93f, 0.95f, 1.f);
 
     /* ADD NODES TO THE SCENE */
     //SceneNode* example = new SceneNode();
@@ -73,7 +73,7 @@ void Application::renderGUI()
 {
     if (ImGui::TreeNodeEx("Scene", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        ImGui::ColorEdit3("Ambient light", (float*)&this->ambient_light);
+        //ImGui::ColorEdit3("Ambient light", (float*)&this->ambient_light);
         ImGui::ColorEdit3("Background Color", (float*)&this->background_color);
   
 

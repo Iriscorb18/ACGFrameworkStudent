@@ -57,29 +57,37 @@ public:
 	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
 	void renderInMenu();
 };
-enum VolumetricType {
-	HOMOGENEOUS, 
-	HETEROGENEOUS
-};
 
 // VolumeMaterial class added for volumetric rendering
+enum VolumeType {
+    HOMOGENEOUS,
+    HETEROGENEOUS
+};
+
+enum ShaderType {
+	ABSORPTION,
+	ABSORPTION_EMISSION
+};
+
 class VolumeMaterial : public Material {
 public:
-	VolumeMaterial(glm::vec4 color = glm::vec4(1.f));
-	~VolumeMaterial();
+    VolumeMaterial(glm::vec4 color = glm::vec4(1.f));
+    ~VolumeMaterial();
 
-	glm::vec4 backgroundColor;
-	float absorptionCoefficient;
-	glm::vec3 boxMin; 
-	glm::vec3 boxMax;  
-	float stepLength;
-	float noiseScale;
-	float noiseDetail;
-	int volumeType; // Default HOMOGENEOUS 0
-	float emissiveIntensity;
+	VolumeType volumeType;
+    ShaderType shaderType;
 
-	glm::vec4 emissiveColor;
-	void setUniforms(Camera* camera, glm::mat4 model);
-	void render(Mesh* mesh, glm::mat4 model, Camera* camera);
-	void renderInMenu();
+    // Shader-related parameters
+    glm::vec4 backgroundColor;
+    glm::vec3 boxMin, boxMax;
+    float absorptionCoefficient;
+    float stepLength;
+    float noiseScale;
+    int noiseDetail;
+    glm::vec4 emissiveColor;
+    float emissiveIntensity;
+
+    void setUniforms(Camera* camera, glm::mat4 model);
+    void render(Mesh* mesh, glm::mat4 model, Camera* camera);
+    void renderInMenu();
 };
