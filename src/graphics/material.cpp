@@ -171,11 +171,16 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	
 	// Default values for material properties
 	this->absorptionCoefficient = 0.5f;
+
 	this->stepLength = 0.001f;
 	this->noiseScale = 2.0f;
 	this->noiseDetail = 0;
+
 	this->emissiveColor = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 	this->emissiveIntensity = 0.02f;
+
+	this->densitySource = CONSTANT_DENSITY;
+	this->densityScale = 1.0f;
 }
 
 VolumeMaterial::~VolumeMaterial() { }
@@ -327,6 +332,17 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_noise_scale", this->noiseScale);
 	this->shader->setUniform("u_noise_detail", this->noiseDetail);
 
+	this->shader->setUniform("u_density_scale", this->densityScale);
+	this->shader->setUniform("u_density_source", (int)this->densitySource);
+
+	if (this->densitySource == VDB_DENSITY && this->texture) {
+		this->shader->setUniform("u_density_texture", this->texture, 0);
+	}
+	else if (this->densitySource == NOISE_DENSITY) {
+		this->shader->setUniform("u_noise_scale", this->noiseScale);
+		this->shader->setUniform("u_noise_detail", this->noiseDetail);
+	}
+
 	if (shaderType == ABSORPTION_EMISSION) {
 		this->shader->setUniform("u_emission_color", this->emissiveColor);
 		this->shader->setUniform("u_emission_intensity", this->emissiveIntensity);
@@ -378,5 +394,13 @@ void VolumeMaterial::renderInMenu()
 	if (shaderType == ABSORPTION_EMISSION && volumeType == HETEROGENEOUS) {
 		ImGui::ColorEdit3("Emission Color", (float*)&this->emissiveColor);
 		ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
+	}
+
+	ImGui::Combo("Density Source", (int*)&densitySource, "Constant\0Noise\0VDB\0");
+	ImGui::SliderFloat("Density Scale", &densityScale, 0.1f, 5.0f);
+
+	if (densitySource == NOISE_DENSITY) {
+		ImGui::SliderFloat("Noise Scale", &noiseScale, 1.0f, 10.0f);
+		ImGui::SliderInt("Noise Detail", &noiseDetail, 0, 5);
 	}
 }

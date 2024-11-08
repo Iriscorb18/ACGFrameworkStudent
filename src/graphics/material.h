@@ -71,6 +71,12 @@ enum ShaderType {
 	ABSORPTION_EMISSION
 };
 
+enum DensitySourceType {
+	CONSTANT_DENSITY,
+	NOISE_DENSITY,
+	VDB_DENSITY
+};
+
 class VolumeMaterial : public Material {
 public:
 
@@ -82,15 +88,22 @@ public:
 
     // Shader-related parameters
     glm::vec3 boxMin, boxMax;
+
     float absorptionCoefficient;
+
     float stepLength;
     float noiseScale;
     int noiseDetail;
+
     glm::vec4 emissiveColor;
     float emissiveIntensity;
 
+	float densityScale;
+	DensitySourceType densitySource;
+
 	void loadVDB(std::string file_path);
 	void estimate3DTexture(easyVDB::OpenVDBReader* vdbReader);
+
     void setUniforms(Camera* camera, glm::mat4 model);
     void render(Mesh* mesh, glm::mat4 model, Camera* camera);
     void renderInMenu();

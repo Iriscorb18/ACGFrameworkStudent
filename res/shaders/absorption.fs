@@ -21,6 +21,10 @@
     uniform float u_noise_scale;
     uniform int u_noise_detail;
 
+    uniform float u_density_scale;
+    uniform int u_density_source; // 0: constant, 1: noise, 2: VDB
+    uniform sampler3D u_density_texture; // Only if using VDB data
+
     uniform int u_volume_type;
 
     uniform vec3 u_box_min; 
@@ -103,6 +107,25 @@
         return clamp(fractal_noise(P, detail), 0.0, 1.0);
     }
 
+
+    // DENSITY NSK
+    float sampleDensity(vec3 position) {
+        if (u_density_source == 0) {
+            return 1.0 * u_density_scale;
+        }
+        else if (u_density_source == 1) {
+            // Sample noise (assuming noise function is defined in shader)
+            return noise(position * u_noise_scale) * u_density_scale;
+        }
+        else if (u_density_source == 2) {
+            // Sample 3D texture (VDB data)
+            return texture(u_density_texture, position).r * u_density_scale;
+        }
+        return 0.0;
+    }
+
+
+
     // MAIN
     void main() {
         vec3 ray_origin = u_camera_position;
@@ -131,8 +154,11 @@
                 while (t < tb) {
                     vec3 sample_position = ray_origin + t * ray_direction;
 
+                    // Sample density and render volume as before, using sampleDensity()
+                    float density = sampleDensity(sample_position); // Example use of sampleDensity()
+
                     float noise_value = cnoise(sample_position, u_noise_scale, u_noise_detail);
-                    float local_absorption_coefficient = noise_value * (u_absorption_coefficient);
+                    float local_absorption_coefficient = (u_absorption_coefficient) * density;
 
                     accumulated_optical_thickness += local_absorption_coefficient * u_step_length;
                 
