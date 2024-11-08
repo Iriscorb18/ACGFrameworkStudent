@@ -7,6 +7,8 @@
 #include "../framework/camera.h"
 #include "mesh.h"
 #include "texture.h"
+#include "openvdbReader.h"
+#include "bbox.h"
 #include "shader.h"
 
 class Material {
@@ -87,6 +89,8 @@ public:
     glm::vec4 emissiveColor;
     float emissiveIntensity;
 
+	void loadVDB(std::string file_path);
+	void estimate3DTexture(easyVDB::OpenVDBReader* vdbReader);
     void setUniforms(Camera* camera, glm::mat4 model);
     void render(Mesh* mesh, glm::mat4 model, Camera* camera);
     void renderInMenu();

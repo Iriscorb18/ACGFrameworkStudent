@@ -31,6 +31,8 @@ void Application::init(GLFWwindow* window)
     VolumeNode* example = new VolumeNode();
     example->mesh = Mesh::Get("res/meshes/cube.obj");
     example->material = new VolumeMaterial();
+    dynamic_cast<VolumeMaterial*>(example->material)->loadVDB("res/volumes/bunny_cloud.vdb");
+
     this->node_list.push_back(example);
 }
 

@@ -4,6 +4,7 @@
 #include "framework/camera.h"
 #include "framework/scenenode.h"
 #include "framework/light.h"
+#include "graphics/material.h"
 
 #include <glm/vec2.hpp>
 
