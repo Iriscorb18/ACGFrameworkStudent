@@ -1,5 +1,4 @@
 #include "material.h"
-
 #include "application.h"
 
 #include <istream>
@@ -168,13 +167,12 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
 
 	// Default values for material properties
-	this->backgroundColor = Application::instance->ambient_light;
-	this->absorptionCoefficient = 0.0f;
-	this->stepLength = 0.04f;
-	this->noiseScale = 0.01f;
+	this->absorptionCoefficient = 0.5f;
+	this->stepLength = 0.001f;
+	this->noiseScale = 2.0f;
 	this->noiseDetail = 0;
-	this->emissiveColor = glm::vec4(0.0f);
-	this->emissiveIntensity = 0.0f;
+	this->emissiveColor = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
+	this->emissiveIntensity = 0.02f;
 }
 
 VolumeMaterial::~VolumeMaterial() { }
@@ -193,7 +191,7 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_box_min", this->boxMin);
 	this->shader->setUniform("u_box_max", this->boxMax);
 
-	this->shader->setUniform("u_background", this->backgroundColor);
+	this->shader->setUniform("u_background", Application::instance->ambient_light);
 	this->shader->setUniform("u_absorption_coefficient", this->absorptionCoefficient);
 
 	this->shader->setUniform("u_volume_type", this->volumeType);	
@@ -231,6 +229,9 @@ void VolumeMaterial::renderInMenu()
 		}
 		else if (shaderType == ABSORPTION_EMISSION) {
 			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption_emission.fs");
+			// automatic changes to make better the visualization
+			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light
+			Application::instance->ambient_light = glm::vec4(0.1f);
 		}
 	}
 
@@ -238,15 +239,16 @@ void VolumeMaterial::renderInMenu()
 	ImGui::Combo("Volume Type", (int*)&volumeType, "Homogeneous\0Heterogeneous\0");
 
 	// Common parameters
-	ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 1.0f);
-	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 1.0f);
+	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 2.0f);
 
 	if (volumeType == HETEROGENEOUS) {
+		ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 0.1f);
 		ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 5.0f);
 		ImGui::SliderInt("Noise Detail", &this->noiseDetail, 0, 5);
 	}
+
 	// Only show emissive parameters for Absorption-Emission Shader
-	if (shaderType == ABSORPTION_EMISSION) {
+	if (shaderType == ABSORPTION_EMISSION && volumeType == HETEROGENEOUS) {
 		ImGui::ColorEdit3("Emission Color", (float*)&this->emissiveColor);
 		ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
 	}

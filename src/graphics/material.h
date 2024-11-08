@@ -71,6 +71,7 @@ enum ShaderType {
 
 class VolumeMaterial : public Material {
 public:
+
     VolumeMaterial(glm::vec4 color = glm::vec4(1.f));
     ~VolumeMaterial();
 
@@ -78,7 +79,6 @@ public:
     ShaderType shaderType;
 
     // Shader-related parameters
-    glm::vec4 backgroundColor;
     glm::vec3 boxMin, boxMax;
     float absorptionCoefficient;
     float stepLength;

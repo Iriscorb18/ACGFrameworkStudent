@@ -17,11 +17,13 @@
     uniform float u_light_shininess;
 
     uniform float u_step_length;
-
     uniform float u_noise_scale;
     uniform int u_noise_detail;
 
     uniform int u_volume_type;
+
+    uniform vec4 u_emission_color;
+    uniform float u_emission_intensity;
 
     uniform vec3 u_box_min; 
     uniform vec3 u_box_max; 
@@ -113,37 +115,39 @@
         float ta = tHit.x;
 
         vec4 final_color = u_background; 
-
         if(u_volume_type == 0){
-            if (ta <= tb && tb > 0.0) {      
-                float optical_thickness = (tb - ta) * (u_absorption_coefficient);
+            if (ta <= tb && tb > 0.0) {
+            
+                float optical_thickness = (tb - ta) * (1-u_absorption_coefficient);
                 float transmittance = exp(-optical_thickness);
 
                 final_color *= transmittance;
             }
         }
-
         else if(u_volume_type != 0){
             if (ta <= tb && tb > 0.0) {
                 float t = ta;
                 float accumulated_optical_thickness = 0.0;
+                vec4 emitted_radiance = vec4(0.0);
+                vec4 accumulated_color;
 
                 while (t < tb) {
                     vec3 sample_position = ray_origin + t * ray_direction;
 
                     float noise_value = cnoise(sample_position, u_noise_scale, u_noise_detail);
-                    float local_absorption_coefficient = noise_value * (u_absorption_coefficient);
+                    float local_absorption_coefficient = noise_value * (1-u_absorption_coefficient);
 
                     accumulated_optical_thickness += local_absorption_coefficient * u_step_length;
                 
                     // Accumulate emitted radiance
-                    //emitted_radiance += u_emission_color * u_emission_intensity * local_absorption_coefficient ;
+                    emitted_radiance += u_emission_color * u_emission_intensity * local_absorption_coefficient ;
                     
                     t += u_step_length;
                 }
+
                 float transmittance = exp(-accumulated_optical_thickness);
-                final_color  *= transmittance;
-                // final_color += accumulated_color; // + emitted_radiance;
+                accumulated_color *= transmittance;
+                final_color += accumulated_color + emitted_radiance;
             }
         }
         
