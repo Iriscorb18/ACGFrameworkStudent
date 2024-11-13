@@ -19,6 +19,7 @@ public:
 	//glm::vec4 background_color;
 	std::vector<Light*> light_list;
 
+
 	int window_width;
 	int window_height;
 

@@ -373,7 +373,12 @@ void VolumeMaterial::renderInMenu()
 		else if (shaderType == ABSORPTION_EMISSION) {
 			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption_emission.fs");
 			// automatic changes to make better the visualization
-			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light
+			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
+			Application::instance->ambient_light = glm::vec4(0.1f);
+		}
+		else if (shaderType == ABSORPTION and this->densitySource == VDB_DENSITY && this->texture) {
+			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
+			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
 			Application::instance->ambient_light = glm::vec4(0.1f);
 		}
 	}

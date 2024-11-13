@@ -34,6 +34,11 @@ void Application::init(GLFWwindow* window)
     dynamic_cast<VolumeMaterial*>(example->material)->loadVDB("res/volumes/bunny_cloud.vdb");
 
     this->node_list.push_back(example);
+
+    Light* l = new Light(glm::vec3(0.7f, 1.8f, 1.4f), LIGHT_POINT, 1.f, glm::vec4(1.f)); 
+    this->light_list.push_back(l); 
+    this->node_list.push_back(l); 
+
 }
 
 void Application::update(float dt)
@@ -57,6 +62,8 @@ void Application::render()
     // set flags
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+
+    
 
     for (unsigned int i = 0; i < this->node_list.size(); i++)
     {
