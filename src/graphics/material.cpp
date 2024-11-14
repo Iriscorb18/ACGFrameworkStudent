@@ -181,6 +181,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 
 	this->densitySource = CONSTANT_DENSITY;
 	this->densityScale = 1.0f;
+
 }
 
 VolumeMaterial::~VolumeMaterial() { }
@@ -314,10 +315,13 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	glm::mat4 inverseModel = glm::inverse(model);
 	glm::vec4 temp = glm::vec4(camera->eye, 1.0);
 	glm::vec3 local_camera_pos = glm::vec3((inverseModel * temp) / temp.w);
+	glm::vec3 texture_camera_pos = (local_camera_pos + glm::vec3(1.0))/glm::vec3(2.0);
+	
 
 	this->shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 	this->shader->setUniform("u_camera_position", camera->eye);
 	this->shader->setUniform("u_localcamera_position", local_camera_pos);
+	this->shader->setUniform("u_texture_position", texture_camera_pos);
 	this->shader->setUniform("u_model", model);
 
 	this->shader->setUniform("u_box_min", this->boxMin);
@@ -378,6 +382,12 @@ void VolumeMaterial::renderInMenu()
 		}
 		else if (shaderType == ABSORPTION and this->densitySource == VDB_DENSITY && this->texture) {
 			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
+			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
+			Application::instance->ambient_light = glm::vec4(0.1f);
+		}
+		else if (shaderType == ABSORPTION_EMISSION and this->densitySource == VDB_DENSITY && this->texture) {
+			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption_emission.fs");
+			// automatic changes to make better the visualization
 			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
 			Application::instance->ambient_light = glm::vec4(0.1f);
 		}

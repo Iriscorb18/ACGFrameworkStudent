@@ -6,6 +6,7 @@
 
     uniform vec3 u_camera_position;
     uniform vec3 u_localcamera_position;
+    uniform vec3 u_texture_position;
 
     uniform vec4 u_color;
     uniform vec4 u_background;
@@ -128,9 +129,21 @@
 
     // MAIN
     void main() {
-        vec3 ray_origin = u_camera_position;
-        vec3 ray_direction = normalize(v_world_position - u_camera_position);
+        vec3 ray_origin;
+        vec3 ray_direction;
+   
+        //vec3 u_texture_position = (u_localcamera_position+vec3(1.0));
+        if(u_density_source == 2){
+            ray_origin = u_texture_position;
+            ray_direction = normalize(v_world_position-u_texture_position);
 
+        }
+        else{
+            ray_origin = u_localcamera_position;
+            ray_direction = normalize(v_world_position - u_localcamera_position);
+
+        }
+   
         vec2 tHit = intersectAABB(ray_origin, ray_direction, u_box_min, u_box_max);
         float tb = tHit.y;  
         float ta = tHit.x;
