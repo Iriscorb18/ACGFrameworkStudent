@@ -168,7 +168,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->shaderType = ABSORPTION;
 	this->volumeType = HOMOGENEOUS;
 	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
-	
+
 	// Default values for material properties
 	this->absorptionCoefficient = 0.5f;
 
@@ -315,13 +315,12 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	glm::mat4 inverseModel = glm::inverse(model);
 	glm::vec4 temp = glm::vec4(camera->eye, 1.0);
 	glm::vec3 local_camera_pos = glm::vec3((inverseModel * temp) / temp.w);
-	glm::vec3 texture_camera_pos = (local_camera_pos + glm::vec3(1.0))/glm::vec3(2.0);
 	
+
 
 	this->shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 	this->shader->setUniform("u_camera_position", camera->eye);
 	this->shader->setUniform("u_localcamera_position", local_camera_pos);
-	this->shader->setUniform("u_texture_position", texture_camera_pos);
 	this->shader->setUniform("u_model", model);
 
 	this->shader->setUniform("u_box_min", this->boxMin);
@@ -330,7 +329,7 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_background", Application::instance->ambient_light);
 	this->shader->setUniform("u_absorption_coefficient", this->absorptionCoefficient);
 
-	this->shader->setUniform("u_volume_type", this->volumeType);	
+	this->shader->setUniform("u_volume_type", this->volumeType);
 
 	this->shader->setUniform("u_step_length", this->stepLength);
 	this->shader->setUniform("u_noise_scale", this->noiseScale);

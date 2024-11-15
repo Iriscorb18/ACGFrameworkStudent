@@ -110,6 +110,7 @@
 
 
     // DENSITY NSK
+    vec3 position_texture; 
     float sampleDensity(vec3 position) {
         if (u_density_source == 0) {
             return 1.0 * u_density_scale;
@@ -120,7 +121,8 @@
         }
         else if (u_density_source == 2) {
             // Sample 3D texture (VDB data)
-            return texture(u_density_texture, position).r * u_density_scale;
+            position_texture = (position + vec3(1.0)) / 2;
+            return texture(u_density_texture, position_texture).r * u_density_scale;
         }
         return 0.0;
     }
@@ -133,16 +135,12 @@
         vec3 ray_direction;
    
         //vec3 u_texture_position = (u_localcamera_position+vec3(1.0));
-        if(u_density_source == 2){
-            ray_origin = u_texture_position;
-            ray_direction = normalize(v_world_position-u_texture_position);
+        
 
-        }
-        else{
-            ray_origin = u_localcamera_position;
-            ray_direction = normalize(v_world_position - u_localcamera_position);
+       
+        ray_origin = u_localcamera_position;
+        ray_direction = normalize(v_world_position - u_localcamera_position);
 
-        }
    
         vec2 tHit = intersectAABB(ray_origin, ray_direction, u_box_min, u_box_max);
         float tb = tHit.y;  
