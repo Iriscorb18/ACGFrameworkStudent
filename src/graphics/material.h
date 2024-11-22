@@ -97,9 +97,13 @@ public:
 
     glm::vec4 emissiveColor;
     float emissiveIntensity;
+	float scatterCoefficient;
+	glm::vec4 light_color;
+
 
 	float densityScale;
 	DensitySourceType densitySource;
+	int numSteps;
 
 	void loadVDB(std::string file_path);
 	void estimate3DTexture(easyVDB::OpenVDBReader* vdbReader);

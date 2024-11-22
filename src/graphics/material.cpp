@@ -178,6 +178,9 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 
 	this->emissiveColor = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
 	this->emissiveIntensity = 0.02f;
+	this->scatterCoefficient = 0.01f;
+	this->numSteps = 1;
+	
 
 	this->densitySource = CONSTANT_DENSITY;
 	this->densityScale = 1.0f;
@@ -337,9 +340,14 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 
 	this->shader->setUniform("u_density_scale", this->densityScale);
 	this->shader->setUniform("u_density_source", (int)this->densitySource);
+	this->shader->setUniform("u_num_step", (int)this->numSteps);
+
 
 	if (this->densitySource == VDB_DENSITY && this->texture) {
 		this->shader->setUniform("u_density_texture", this->texture, 0);
+		this->shader->setUniform("u_emission_color", this->emissiveColor);
+		this->shader->setUniform("u_emission_intensity", this->emissiveIntensity);
+		this->shader->setUniform("u_scatter_coefficient", this->scatterCoefficient);
 	}
 	else if (this->densitySource == NOISE_DENSITY) {
 		this->shader->setUniform("u_noise_scale", this->noiseScale);
@@ -362,6 +370,8 @@ void VolumeMaterial::render(Mesh* mesh, glm::mat4 model, Camera* camera)
 	this->boxMax = mesh->aabb_max;
 
 	setUniforms(camera, model);
+	Light* light = Application::instance->light_list[0];
+	light->setUniforms(this->shader, model);
 	mesh->render(GL_TRIANGLES);
 	this->shader->disable();
 }
@@ -402,6 +412,12 @@ void VolumeMaterial::renderInMenu()
 		ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 0.1f);
 		ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 5.0f);
 		ImGui::SliderInt("Noise Detail", &this->noiseDetail, 0, 5);
+		if (densitySource == VDB_DENSITY) {
+			ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
+			ImGui::SliderInt("Num Steps", &this->numSteps, 0, 5);
+			ImGui::SliderFloat("Scatter Coefficient", &this->scatterCoefficient, -5.0f, 5.0f);
+		}
+
 	}
 
 	// Only show emissive parameters for Absorption-Emission Shader
@@ -417,4 +433,5 @@ void VolumeMaterial::renderInMenu()
 		ImGui::SliderFloat("Noise Scale", &noiseScale, 1.0f, 10.0f);
 		ImGui::SliderInt("Noise Detail", &noiseDetail, 0, 5);
 	}
+	
 }
