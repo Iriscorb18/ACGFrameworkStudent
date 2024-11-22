@@ -109,7 +109,9 @@ float cnoise( vec3 P, float scale, float detail )
     return clamp(fractal_noise(P, detail), 0.0, 1.0);
 }
 
+
 float sampleDensity(vec3 position) {
+        vec3 position_texture; 
         if (u_density_source == 0) {
             return 1.0 * u_density_scale;
         }
@@ -118,8 +120,8 @@ float sampleDensity(vec3 position) {
             return noise(position * u_noise_scale) * u_density_scale;
         }
         else if (u_density_source == 2) {
-            // Sample 3D texture (VDB data)
-            return texture(u_density_texture, position).r * u_density_scale;
+            position_texture = (position + vec3(1.0)) / 2;
+            return texture(u_density_texture, position_texture).r * u_density_scale;
         }
         return 0.0;
 }
