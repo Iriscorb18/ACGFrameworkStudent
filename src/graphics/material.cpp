@@ -180,6 +180,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->emissiveIntensity = 0.02f;
 	this->scatterCoefficient = 0.01f;
 	this->numSteps = 1;
+	this->gValue = 0.0;
 	
 
 	this->densitySource = CONSTANT_DENSITY;
@@ -341,6 +342,7 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_density_scale", this->densityScale);
 	this->shader->setUniform("u_density_source", (int)this->densitySource);
 	this->shader->setUniform("u_num_step", (int)this->numSteps);
+	this->shader->setUniform("u_g", (float)this->gValue);
 
 
 	if (this->densitySource == VDB_DENSITY && this->texture) {
@@ -416,6 +418,7 @@ void VolumeMaterial::renderInMenu()
 			ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
 			ImGui::SliderInt("Num Steps", &this->numSteps, 0, 5);
 			ImGui::SliderFloat("Scatter Coefficient", &this->scatterCoefficient, -5.0f, 5.0f);
+			ImGui::SliderFloat("G Value", &this->gValue, -1.0f,1.0f);
 		}
 
 	}

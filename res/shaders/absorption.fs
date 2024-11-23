@@ -155,7 +155,7 @@ void main() {
         }
     
     } else if (u_volume_type != 0) {
-        float fx = 1/(4 * 3.14); //phase function (isotropic)
+        //float fx = 1/(4 * 3.14); //phase function (isotropic)
         if (ta <= tb && tb > 0.0) {
             float t = ta; //
             float accumulated_optical_thickness = 0.0; //T(0, tmax)
@@ -179,6 +179,11 @@ void main() {
 
                 vec3 light_direction = normalize(u_light_position - sample_position); //Calculate the direction from the current sample position to the light source.
                 float distance_light = length(u_light_position - sample_position); //Calculate the distance between the current sample and the light source
+                // Compute the cosine of the scattering angle
+                float cos_theta = dot(-ray_direction, light_direction);
+
+                // Henyey-Greenstein phase function formula
+                float fx = (1.0 - u_g * u_g) / (4.0 * 3.14159265359 * pow(1.0 + u_g * u_g - 2.0 * u_g * cos_theta, 1.5));
 
                 //initialize the optical thickness and transmittance of the light
                 float light_accumulated_optical_thickness = 0.0;
@@ -205,7 +210,7 @@ void main() {
 
                 float light_transmittance = exp(-light_accumulated_optical_thickness);
 
-                vec4 Ls = fx * light_transmittance * u_light_color; // Scatter radiance
+                vec4 Ls = fx * light_transmittance * u_light_color*u_light_intensity; // Scatter radiance
 
                 //Riemann sum 
                 radiance += ((Le * local_coefficient + local_scatter_coefficient * Ls) * accumulated_transmittance); 

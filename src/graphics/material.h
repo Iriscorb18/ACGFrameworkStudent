@@ -99,7 +99,7 @@ public:
     float emissiveIntensity;
 	float scatterCoefficient;
 	glm::vec4 light_color;
-
+	float gValue;
 
 	float densityScale;
 	DensitySourceType densitySource;
