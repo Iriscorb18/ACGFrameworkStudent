@@ -170,19 +170,18 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
 
 	// Default values for material properties
-	this->absorptionCoefficient = 0.5f;
+	this->absorptionCoefficient = 1.0f;
 
 	this->stepLength = 0.001f;
 	this->noiseScale = 2.0f;
 	this->noiseDetail = 0;
 
 	this->emissiveColor = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
-	this->emissiveIntensity = 0.02f;
+	this->emissiveIntensity = 0.0f;
 	this->scatterCoefficient = 0.01f;
 	this->numSteps = 1;
 	this->gValue = 0.0;
 	
-
 	this->densitySource = CONSTANT_DENSITY;
 	this->densityScale = 1.0f;
 
@@ -415,12 +414,10 @@ void VolumeMaterial::renderInMenu()
 		ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 5.0f);
 		ImGui::SliderInt("Noise Detail", &this->noiseDetail, 0, 5);
 		if (densitySource == VDB_DENSITY) {
-			ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
 			ImGui::SliderInt("Num Steps", &this->numSteps, 0, 5);
-			ImGui::SliderFloat("Scatter Coefficient", &this->scatterCoefficient, -5.0f, 5.0f);
+			ImGui::SliderFloat("Scatter Coefficient", &this->scatterCoefficient, 0.0f, 0.1f);
 			ImGui::SliderFloat("G Value", &this->gValue, -1.0f,1.0f);
 		}
-
 	}
 
 	// Only show emissive parameters for Absorption-Emission Shader

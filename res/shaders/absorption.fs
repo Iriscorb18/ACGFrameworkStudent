@@ -210,9 +210,9 @@ void main() {
 
                 float light_transmittance = exp(-light_accumulated_optical_thickness);
 
-                vec4 Ls = fx * light_transmittance * u_light_color*u_light_intensity; // Scatter radiance
+                vec4 Ls = fx * light_transmittance * u_light_color * u_light_intensity; // Scatter radiance
 
-                //Riemann sum 
+                //Riemann sum: integral of T(t', t) [coeff_t(t') * Le(t') + coeff_s(t) * Ls(t')]
                 radiance += ((Le * local_coefficient + local_scatter_coefficient * Ls) * accumulated_transmittance); 
                 
                 t += u_step_length; // update the t
