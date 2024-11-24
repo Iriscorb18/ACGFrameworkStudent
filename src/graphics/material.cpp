@@ -176,7 +176,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->noiseScale = 2.0f;
 	this->noiseDetail = 0;
 
-	this->emissiveColor = glm::vec4(0.1f, 0.1f, 0.9f, 1.f);
+	this->emissiveColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.f);
 	this->emissiveIntensity = 0.0f;
 	this->scatterCoefficient = 0.01f;
 	this->numSteps = 1;
@@ -417,6 +417,8 @@ void VolumeMaterial::renderInMenu()
 			ImGui::SliderInt("Num Steps", &this->numSteps, 0, 5);
 			ImGui::SliderFloat("Scatter Coefficient", &this->scatterCoefficient, 0.0f, 0.1f);
 			ImGui::SliderFloat("G Value", &this->gValue, -1.0f,1.0f);
+			ImGui::ColorEdit3("Emission Color", (float*)&this->emissiveColor);
+			ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
 		}
 	}
 
