@@ -68,7 +68,8 @@ enum VolumeType {
 
 enum ShaderType {
 	ABSORPTION,
-	ABSORPTION_EMISSION
+	ABSORPTION_EMISSION,
+	FULL_VOLUME
 };
 
 enum DensitySourceType {

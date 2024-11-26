@@ -167,7 +167,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->color = color;
 	this->shaderType = ABSORPTION;
 	this->volumeType = HOMOGENEOUS;
-	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
+	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/fullvolume.fs");
 
 	// Default values for material properties
 	this->absorptionCoefficient = 1.0f;
@@ -346,9 +346,11 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 
 	if (this->densitySource == VDB_DENSITY && this->texture) {
 		this->shader->setUniform("u_density_texture", this->texture, 0);
-		this->shader->setUniform("u_emission_color", this->emissiveColor);
-		this->shader->setUniform("u_emission_intensity", this->emissiveIntensity);
-		this->shader->setUniform("u_scatter_coefficient", this->scatterCoefficient);
+		if (this->shaderType == FULL_VOLUME) {
+			this->shader->setUniform("u_emission_color", this->emissiveColor);
+			this->shader->setUniform("u_emission_intensity", this->emissiveIntensity);
+			this->shader->setUniform("u_scatter_coefficient", this->scatterCoefficient);
+		}
 	}
 	else if (this->densitySource == NOISE_DENSITY) {
 		this->shader->setUniform("u_noise_scale", this->noiseScale);
@@ -380,7 +382,7 @@ void VolumeMaterial::render(Mesh* mesh, glm::mat4 model, Camera* camera)
 void VolumeMaterial::renderInMenu()
 {
 	// Update shader based on the selected shader type
-	if (ImGui::Combo("Shader Type", (int*)&shaderType, "Absorption\0Absorption-Emission\0")) {
+	if (ImGui::Combo("Shader Type", (int*)&shaderType, "Absorption\0Absorption-Emission\0Full Volume\0")) {
 		if (shaderType == ABSORPTION) {
 			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption.fs");
 		}
@@ -397,6 +399,12 @@ void VolumeMaterial::renderInMenu()
 		}
 		else if (shaderType == ABSORPTION_EMISSION and this->densitySource == VDB_DENSITY && this->texture) {
 			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/absorption_emission.fs");
+			// automatic changes to make better the visualization
+			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
+			Application::instance->ambient_light = glm::vec4(0.1f);
+		}
+		else if (shaderType == FULL_VOLUME and this->densitySource == VDB_DENSITY && this->texture) {
+			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/fullvolume.fs");
 			// automatic changes to make better the visualization
 			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
 			Application::instance->ambient_light = glm::vec4(0.1f);
