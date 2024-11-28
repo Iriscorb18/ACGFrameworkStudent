@@ -167,7 +167,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->color = color;
 	this->shaderType = ABSORPTION;
 	this->volumeType = HOMOGENEOUS;
-	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/fullvolume.fs");
+	this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/fullvolume_j.fs");
 
 	// Default values for material properties
 	this->absorptionCoefficient = 1.0f;
@@ -185,6 +185,7 @@ VolumeMaterial::VolumeMaterial(glm::vec4 color)
 	this->densitySource = CONSTANT_DENSITY;
 	this->densityScale = 1.0f;
 
+	this->flag_jittering = false;
 }
 
 VolumeMaterial::~VolumeMaterial() { }
@@ -342,7 +343,7 @@ void VolumeMaterial::setUniforms(Camera* camera, glm::mat4 model)
 	this->shader->setUniform("u_density_source", (int)this->densitySource);
 	this->shader->setUniform("u_num_step", (int)this->numSteps);
 	this->shader->setUniform("u_g", (float)this->gValue);
-
+	this->shader->setUniform("u_jittering", this->flag_jittering);
 
 	if (this->densitySource == VDB_DENSITY && this->texture) {
 		this->shader->setUniform("u_density_texture", this->texture, 0);
@@ -404,7 +405,7 @@ void VolumeMaterial::renderInMenu()
 			Application::instance->ambient_light = glm::vec4(0.1f);
 		}
 		else if (shaderType == FULL_VOLUME and this->densitySource == VDB_DENSITY && this->texture) {
-			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/fullvolume.fs");
+			this->shader = Shader::Get("res/shaders/basic.vs", "res/shaders/fullvolume_j.fs");
 			// automatic changes to make better the visualization
 			this->volumeType = HETEROGENEOUS; // as the homogeneous doesn't have emission light 
 			Application::instance->ambient_light = glm::vec4(0.1f);
@@ -418,7 +419,7 @@ void VolumeMaterial::renderInMenu()
 	ImGui::SliderFloat("Absorption Coefficient", &this->absorptionCoefficient, 0.0f, 2.0f);
 
 	if (volumeType == HETEROGENEOUS) {
-		ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 0.1f);
+		ImGui::SliderFloat("Step Length", &this->stepLength, 0.001f, 0.5f);
 		ImGui::SliderFloat("Noise Scale", &this->noiseScale, 1.0f, 5.0f);
 		ImGui::SliderInt("Noise Detail", &this->noiseDetail, 0, 5);
 		if (densitySource == VDB_DENSITY) {
@@ -427,6 +428,7 @@ void VolumeMaterial::renderInMenu()
 			ImGui::SliderFloat("G Value", &this->gValue, -1.0f,1.0f);
 			ImGui::ColorEdit3("Emission Color", (float*)&this->emissiveColor);
 			ImGui::SliderFloat("Emission Intensity", &this->emissiveIntensity, 0.0f, 1.0f);
+			ImGui::Checkbox("Jittering", &this->flag_jittering);
 		}
 	}
 
