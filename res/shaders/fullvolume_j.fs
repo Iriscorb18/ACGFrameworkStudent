@@ -42,6 +42,7 @@ uniform vec3 u_box_max;
 
 //JITTERING
 uniform bool u_jittering; //0:don't use jittering, 1:use jittering
+uniform float u_threshold; //threshold 
 
 out vec4 FragColor; //FINAL COLOR 
 
@@ -186,6 +187,12 @@ void main() {
                 accumulated_optical_thickness += local_coefficient * u_step_length; //total optical thickness
                 float step_transmittance = exp(-local_coefficient * u_step_length); //transmittance total coefficient
                 accumulated_transmittance *= step_transmittance; 
+
+                
+                // When the trasnmittance is less than the threshold the march stops
+                if (accumulated_transmittance < u_threshold) {
+                    break;
+                }
 
                 vec4 Le = u_emission_color * u_emission_intensity; //emitted radiance
 

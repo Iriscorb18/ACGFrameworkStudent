@@ -102,6 +102,8 @@ public:
 	glm::vec4 light_color;
 	float gValue;
 
+	float threshold; 
+
 	float densityScale;
 	DensitySourceType densitySource;
 	int numSteps;
