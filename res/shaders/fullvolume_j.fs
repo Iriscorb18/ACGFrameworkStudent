@@ -180,67 +180,14 @@ void main() {
                 vec3 sample_position = ray_origin + t * ray_direction; //initialize the sample position 
                 float density = sampleDensity(sample_position); //get the density 
 
-                float local_absorption_coefficient = u_absorption_coefficient * density; //absoption coefficient in the integral
-                float local_scatter_coefficient = u_scatter_coefficient * density; //scatter coefficient
-                float local_coefficient = local_absorption_coefficient + local_scatter_coefficient; //total coefficient
-
-                accumulated_optical_thickness += local_coefficient * u_step_length; //total optical thickness
-                float step_transmittance = exp(-local_coefficient * u_step_length); //transmittance total coefficient
-                accumulated_transmittance *= step_transmittance; 
-
-                
-                // When the trasnmittance is less than the threshold the march stops
-                if (accumulated_transmittance < u_threshold) {
+                //if the density higher than threshold, paint
+                if (density > u_threshold) {
+                    final_color = vec4(1.0,0.0,1.0,1.0);
                     break;
                 }
-
-                vec4 Le = u_emission_color * u_emission_intensity; //emitted radiance
-
-                //COMPUTATION OF THE Ls (IN-SCATTER COLOR)
-
-                vec3 light_direction = normalize(u_light_position - sample_position); //Calculate the direction from the current sample position to the light source.
-                float distance_light = length(u_light_position - sample_position); //Calculate the distance between the current sample and the light source
-                // Compute the cosine of the scattering angle
-                float cos_theta = dot(-ray_direction, light_direction);
-
-                // Henyey-Greenstein phase function formula
-                float fx = (1.0 - u_g * u_g) / (4.0 * 3.14159265359 * pow(1.0 + u_g * u_g - 2.0 * u_g * cos_theta, 1.5));
-
-                //initialize the optical thickness and transmittance of the light
-                float light_accumulated_optical_thickness = 0.0;
-
-                //Computed the Ray-Marching from the current sample position to the light source 
-                float t_light = 0.0;
-
-                vec2 tHit2 = intersectAABB(sample_position, light_direction, u_box_min, u_box_max);
-                float tb2 = tHit2.y; //tmax
-                float ta2 = tHit2.x; //tmin
-
-                float step = tb2/u_num_step;
-
-                while (t_light < tb2) {
-                    vec3 light_sample_position = sample_position + t_light * light_direction;                            //current position along the light 
-                    float light_density = sampleDensity(light_sample_position);                                          //sample the density of the light 
-                    float light_total_coefficient = (u_absorption_coefficient + u_scatter_coefficient) * light_density;  //the total coefficient (absorption + scatter) of the light 
-
-                    light_accumulated_optical_thickness += (light_total_coefficient) * step;                               //accumulate optical thickness of the light 
-                    // light_transmittance *= exp(-light_total_coefficient * u_step_length);                                //trasmittance of the light
-
-                    t_light += step;                                                                            //update the step of the light
-                }
-
-                float light_transmittance = exp(-light_accumulated_optical_thickness);
-
-                vec4 Ls = fx * light_transmittance * u_light_color * u_light_intensity; // Scatter radiance
-
-                //Riemann sum: integral of T(t', t) [coeff_t(t') * Le(t') + coeff_s(t) * Ls(t')]
-                radiance += ((Le * local_coefficient + local_scatter_coefficient * Ls) * accumulated_transmittance) * u_step_length; 
                 
                 t += u_step_length; // update the t
             }
-
-            float transmittance = exp(-accumulated_optical_thickness); //T(0,t)
-            final_color = radiance + u_background * transmittance; //L(t)
         }
     }
 
