@@ -28,19 +28,19 @@ void Application::init(GLFWwindow* window)
     //example->material = new StandardMaterial();
     //this->node_list.push_back(example);
 
-    VolumeNode* bunny_vol = new VolumeNode();
+    /*VolumeNode* bunny_vol = new VolumeNode();
     bunny_vol->mesh = Mesh::Get("res/meshes/cube.obj");
     bunny_vol->material = new VolumeMaterial();
     dynamic_cast<VolumeMaterial*>(bunny_vol->material)->loadVDB("res/volumes/bunny_cloud.vdb");
 
-    this->node_list.push_back(bunny_vol);
+    this->node_list.push_back(bunny_vol);*/
 
-    /*VolumeNode* bunny_iso = new VolumeNode();
+    VolumeNode* bunny_iso = new VolumeNode();
     bunny_iso->mesh = Mesh::Get("res/meshes/cube.obj");
     bunny_iso->material = new IsosurfaceMaterial();
-    dynamic_cast<IsosurfaceMaterial*>(bunny_iso->material)->loadVDB("res/volumes/bunny_cloud.vdb");*/
+    dynamic_cast<IsosurfaceMaterial*>(bunny_iso->material)->loadVDB("res/volumes/bunny_cloud.vdb");
 
-    /*this->node_list.push_back(bunny_iso);*/
+    this->node_list.push_back(bunny_iso);
 
     Light* l = new Light(glm::vec3(0.7f, 1.8f, 1.4f), LIGHT_POINT, 1.f, glm::vec4(1.f)); 
     this->light_list.push_back(l); 

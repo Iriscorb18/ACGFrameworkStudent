@@ -99,7 +99,7 @@ void VolumeNode::render(Camera* camera)
 
 void VolumeNode::renderVolume(Camera* camera)
 {
-	VolumeMaterial mat = VolumeMaterial();
+	IsosurfaceMaterial mat = IsosurfaceMaterial();
 	mat.render(this->mesh, this->model, camera);
 }
 
