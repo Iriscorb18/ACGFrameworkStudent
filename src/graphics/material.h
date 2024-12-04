@@ -78,45 +78,45 @@ enum DensitySourceType {
 	VDB_DENSITY
 };
 
-//class VolumeMaterial : public Material {
-//public:
-//
-//    VolumeMaterial(glm::vec4 color = glm::vec4(1.f));
-//    ~VolumeMaterial();
-//
-//	VolumeType volumeType;
-//    ShaderType shaderType;
-//
-//    // Shader-related parameters
-//    glm::vec3 boxMin, boxMax;
-//
-//    float absorptionCoefficient;
-//
-//    float stepLength;
-//    float noiseScale;
-//    int noiseDetail;
-//
-//    glm::vec4 emissiveColor;
-//    float emissiveIntensity;
-//	float scatterCoefficient;
-//	glm::vec4 light_color;
-//	float gValue;
-//
-//	float threshold; 
-//
-//	float densityScale;
-//	DensitySourceType densitySource;
-//	int numSteps;
-//
-//	bool flag_jittering;
-//
-//	void loadVDB(std::string file_path);
-//	void estimate3DTexture(easyVDB::OpenVDBReader* vdbReader);
-//
-//    void setUniforms(Camera* camera, glm::mat4 model);
-//    void render(Mesh* mesh, glm::mat4 model, Camera* camera);
-//    void renderInMenu();
-//};
+class VolumeMaterial : public Material {
+public:
+
+    VolumeMaterial(glm::vec4 color = glm::vec4(1.f));
+    ~VolumeMaterial();
+
+	VolumeType volumeType;
+    ShaderType shaderType;
+
+    // Shader-related parameters
+    glm::vec3 boxMin, boxMax;
+
+    float absorptionCoefficient;
+
+    float stepLength;
+    float noiseScale;
+    int noiseDetail;
+
+    glm::vec4 emissiveColor;
+    float emissiveIntensity;
+	float scatterCoefficient;
+	glm::vec4 light_color;
+	float gValue;
+
+	float threshold; 
+
+	float densityScale;
+	DensitySourceType densitySource;
+	int numSteps;
+
+	bool flag_jittering;
+
+	void loadVDB(std::string file_path);
+	void estimate3DTexture(easyVDB::OpenVDBReader* vdbReader);
+
+    void setUniforms(Camera* camera, glm::mat4 model);
+    void render(Mesh* mesh, glm::mat4 model, Camera* camera);
+    void renderInMenu();
+};
 
 class IsosurfaceMaterial : public Material {
 public:
@@ -125,26 +125,14 @@ public:
 
 	VolumeType volumeType;
 	ShaderType shaderType;
+	DensitySourceType densitySource;
 
 	// Shader-related parameters
 	glm::vec3 boxMin, boxMax;
 
-	float absorptionCoefficient;
-
+	
 	float stepLength;
-	float noiseScale;
-	int noiseDetail;
-
-	glm::vec4 emissiveColor;
-	float emissiveIntensity;
-	float scatterCoefficient;
-	glm::vec4 light_color;
-	float gValue;
-
 	float densityScale;
-	DensitySourceType densitySource;
-	int numSteps;
-
 	bool flag_jittering;
 
 	float threshold;

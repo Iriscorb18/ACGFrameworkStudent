@@ -28,12 +28,13 @@ void Application::init(GLFWwindow* window)
     //example->material = new StandardMaterial();
     //this->node_list.push_back(example);
 
-    /*VolumeNode* bunny_vol = new VolumeNode();
+    VolumeNode* bunny_vol = new VolumeNode();
+    bunny_vol->model = glm::mat4(glm::vec4(1.0, 0.0, 0.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 0.0), glm::vec4(2.0, 0.0, 0.0, 0.0));
     bunny_vol->mesh = Mesh::Get("res/meshes/cube.obj");
     bunny_vol->material = new VolumeMaterial();
     dynamic_cast<VolumeMaterial*>(bunny_vol->material)->loadVDB("res/volumes/bunny_cloud.vdb");
 
-    this->node_list.push_back(bunny_vol);*/
+    this->node_list.push_back(bunny_vol);
 
     VolumeNode* bunny_iso = new VolumeNode();
     bunny_iso->mesh = Mesh::Get("res/meshes/cube.obj");
